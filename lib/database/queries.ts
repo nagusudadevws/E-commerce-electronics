@@ -98,12 +98,19 @@ export const deleteProduct = async (id: string): Promise<void> => {
 // CATEGORIES
 // =====================================================
 
-export const getCategories = async (): Promise<Category[]> => {
-  const { data, error } = await supabase
+export const getCategories = async (filters?: { active?: boolean }): Promise<Category[]> => {
+  let query = supabase
     .from('categories')
     .select('*')
-    .eq('is_active', true)
-    .order('name')
+
+  if (filters?.active !== undefined) {
+    query = query.eq('is_active', filters.active)
+  } else {
+    // Default to active categories only
+    query = query.eq('is_active', true)
+  }
+
+  const { data, error } = await query.order('name')
 
   if (error) throw error
   return data || []
@@ -405,6 +412,23 @@ export const getProfile = async (userId: string): Promise<Profile | null> => {
   return data
 }
 
+export const getProfiles = async (filters?: {
+  role?: 'admin' | 'seller' | 'customer'
+}): Promise<Profile[]> => {
+  let query = supabase
+    .from('profiles')
+    .select('*')
+
+  if (filters?.role) {
+    query = query.eq('role', filters.role)
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false })
+
+  if (error) throw error
+  return data || []
+}
+
 export const updateProfile = async (userId: string, updates: Partial<Profile>): Promise<Profile> => {
   const { data, error } = await supabase
     .from('profiles')
@@ -416,4 +440,5 @@ export const updateProfile = async (userId: string, updates: Partial<Profile>): 
   if (error) throw error
   return data
 }
+
 

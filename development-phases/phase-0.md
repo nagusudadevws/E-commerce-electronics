@@ -844,3 +844,4 @@ export default function PrivacyPage() {
 
 **Next Phase**: [Phase 1: Project Setup & Authentication Foundation](./phase-1.md)
 
+

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '@/components/layout/AdminLayout'
 import Card from '@/components/ui/Card'
+import Button from '@/components/ui/Button'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { supabase } from '@/lib/supabase/client'
 
@@ -12,6 +13,7 @@ export default function AdminDashboard() {
     totalOrders: 0,
     totalRevenue: 0,
     lowStockCount: 0,
+    pendingOrders: 0,
   })
   const [loading, setLoading] = useState(true)
 
@@ -47,11 +49,18 @@ export default function AdminDashboard() {
         .lt('stock', 10)
         .eq('status', 'active')
 
+      // Get pending orders count
+      const { count: pendingOrdersCount } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending')
+
       setStats({
         totalProducts: productCount || 0,
         totalOrders: orderCount || 0,
         totalRevenue: revenue,
         lowStockCount: lowStockCount || 0,
+        pendingOrders: pendingOrdersCount || 0,
       })
     } catch (error) {
       console.error('Error fetching dashboard stats:', error)
@@ -115,22 +124,48 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Low Stock Alert */}
-        {stats.lowStockCount > 0 && (
-          <Card className="p-6 border-l-4 border-red-500 bg-red-50">
-            <div className="flex items-center">
-              <span className="text-2xl mr-3">⚠️</span>
-              <div>
-                <h3 className="text-lg font-semibold text-red-900">
-                  Low Stock Alert
-                </h3>
-                <p className="text-red-700">
-                  {stats.lowStockCount} product{stats.lowStockCount !== 1 ? 's' : ''} have low stock (less than 10 units)
-                </p>
+        {/* Alerts */}
+        <div className="space-y-4">
+          {stats.lowStockCount > 0 && (
+            <Card className="p-6 border-l-4 border-red-500 bg-red-50">
+              <div className="flex items-center">
+                <span className="text-2xl mr-3">⚠️</span>
+                <div>
+                  <h3 className="text-lg font-semibold text-red-900">
+                    Low Stock Alert
+                  </h3>
+                  <p className="text-red-700">
+                    {stats.lowStockCount} product{stats.lowStockCount !== 1 ? 's' : ''} have low stock (less than 10 units)
+                  </p>
+                </div>
               </div>
-            </div>
-          </Card>
-        )}
+            </Card>
+          )}
+
+          {stats.pendingOrders > 0 && (
+            <Card className="p-6 border-l-4 border-yellow-500 bg-yellow-50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <span className="text-2xl mr-3">📦</span>
+                  <div>
+                    <h3 className="text-lg font-semibold text-yellow-900">
+                      Pending Orders
+                    </h3>
+                    <p className="text-yellow-700">
+                      {stats.pendingOrders} order{stats.pendingOrders !== 1 ? 's' : ''} pending processing
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.href = '/admin/orders?status=pending'}
+                >
+                  View Orders
+                </Button>
+              </div>
+            </Card>
+          )}
+        </div>
 
         {/* Welcome Message */}
         <Card className="p-6">

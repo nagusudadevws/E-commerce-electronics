@@ -73,3 +73,4 @@ After setup, try creating an account again. The error should be resolved.
 - Verify your project status in Supabase Dashboard
 - Check network tab in browser DevTools for detailed error messages
 
+

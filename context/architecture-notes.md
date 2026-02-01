@@ -178,3 +178,4 @@ Every table has RLS enabled with policies for:
 **Note**: This architecture is designed for the initial release. Future phases may require adjustments based on scale and requirements.
 
 
+

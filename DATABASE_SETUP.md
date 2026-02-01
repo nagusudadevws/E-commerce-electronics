@@ -192,3 +192,4 @@ After successful migration:
 - Review migration file: `supabase/migrations/001_initial_schema.sql`
 - Check application logs for connection errors
 
+

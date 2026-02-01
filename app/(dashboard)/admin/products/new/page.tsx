@@ -6,16 +6,19 @@ import AdminLayout from '@/components/layout/AdminLayout'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import { createProduct, getCategories, getVendorByUserId } from '@/lib/database/queries'
+import { createProduct, getCategories, getVendorByUserId, getVendors } from '@/lib/database/queries'
 import { supabase } from '@/lib/supabase/client'
-import type { Category } from '@/types/database'
+import ImageUpload from '@/components/products/ImageUpload'
+import type { Category, Vendor } from '@/types/database'
 
 export default function NewProductPage() {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
+  const [vendors, setVendors] = useState<Vendor[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [vendorId, setVendorId] = useState<string | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -24,11 +27,13 @@ export default function NewProductPage() {
     sku: '',
     category_id: '',
     status: 'active' as 'active' | 'inactive',
+    image_url: '',
   })
 
   useEffect(() => {
     fetchCategories()
-    fetchVendorId()
+    initializeVendor()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchCategories = async () => {
@@ -40,33 +45,45 @@ export default function NewProductPage() {
     }
   }
 
-  const fetchVendorId = async () => {
+  const initializeVendor = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const vendor = await getVendorByUserId(user.id)
-      if (vendor) {
-        setVendorId(vendor.id)
-      } else {
-        // If user is admin, we might need to handle this differently
-        // For now, we'll show an error if vendor not found
-        const profile = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single()
+      // Check user role
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single()
 
-        if (profile.data?.role === 'admin') {
-          // Admin can create products, but we need a vendor_id
-          // For now, we'll require admin to select a vendor or create one
-          setError('Admin users need to be associated with a vendor to create products. Please create a vendor profile first.')
+      if (profile?.role === 'admin') {
+        setIsAdmin(true)
+        // Fetch all vendors for admin to select from
+        try {
+          const vendorsData = await getVendors()
+          setVendors(vendorsData)
+          // Auto-select first vendor if available
+          if (vendorsData.length > 0) {
+            setVendorId(vendorsData[0].id)
+          } else {
+            setError('No vendors found. Please create a vendor first. Go to Vendors page to create one.')
+          }
+        } catch (error) {
+          console.error('Error fetching vendors:', error)
+          setError('Failed to load vendors. Please try again.')
+        }
+      } else {
+        // For sellers, fetch their own vendor profile
+        const vendor = await getVendorByUserId(user.id)
+        if (vendor) {
+          setVendorId(vendor.id)
         } else {
           setError('Vendor profile not found. Please create a vendor profile first.')
         }
       }
     } catch (error) {
-      console.error('Error fetching vendor:', error)
+      console.error('Error initializing vendor:', error)
       setError('Failed to load vendor information')
     }
   }
@@ -121,7 +138,7 @@ export default function NewProductPage() {
         price: price,
         stock: stock,
         sku: formData.sku || null,
-        image_url: null,
+        image_url: formData.image_url || null,
         status: formData.status,
       })
 
@@ -218,6 +235,30 @@ export default function NewProductPage() {
               </div>
             </div>
 
+            {isAdmin && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  Vendor *
+                </label>
+                <select
+                  value={vendorId || ''}
+                  onChange={(e) => setVendorId(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  required
+                >
+                  <option value="">Select a vendor</option>
+                  {vendors.map((vendor) => (
+                    <option key={vendor.id} value={vendor.id}>
+                      {vendor.business_name}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-sm text-gray-500">
+                  Select the vendor this product belongs to
+                </p>
+              </div>
+            )}
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Status *
@@ -233,8 +274,13 @@ export default function NewProductPage() {
               </select>
             </div>
 
+            <ImageUpload
+              onUploadComplete={(url) => setFormData({ ...formData, image_url: url })}
+              currentImageUrl={formData.image_url}
+            />
+
             <div className="flex gap-4 pt-4">
-              <Button type="submit" isLoading={loading} disabled={!vendorId}>
+              <Button type="submit" isLoading={loading} disabled={!vendorId || loading}>
                 Create Product
               </Button>
               <Button
@@ -252,4 +298,5 @@ export default function NewProductPage() {
     </AdminLayout>
   )
 }
+
 

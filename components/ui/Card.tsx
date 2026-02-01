@@ -27,3 +27,4 @@ export default function Card({ children, className, padding = 'md' }: CardProps)
   )
 }
 
+

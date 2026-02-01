@@ -35,12 +35,19 @@ export default function AdminLayout({ children, allowedRoles = ['admin', 'seller
     setUser(session?.user ?? null)
   }
 
+  const userRole = user?.user_metadata?.role as 'admin' | 'seller' | 'customer' | undefined
+  const isSeller = userRole === 'seller'
+  const dashboardHref = isSeller ? '/seller' : '/admin'
+
   const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: '📊' },
+    { name: 'Dashboard', href: dashboardHref, icon: '📊' },
     { name: 'Products', href: '/admin/products', icon: '📦' },
     { name: 'Categories', href: '/admin/categories', icon: '🏷️' },
     { name: 'Orders', href: '/admin/orders', icon: '🛒' },
-    { name: 'Customers', href: '/admin/customers', icon: '👥' },
+    ...(userRole === 'admin' ? [
+      { name: 'Vendors', href: '/admin/vendors', icon: '🏪' },
+      { name: 'Customers', href: '/admin/customers', icon: '👥' }
+    ] : []),
   ]
 
   const handleSignOut = async () => {
@@ -49,6 +56,10 @@ export default function AdminLayout({ children, allowedRoles = ['admin', 'seller
   }
 
   const getPageTitle = () => {
+    // Handle seller dashboard route
+    if (pathname === '/seller') {
+      return 'Dashboard'
+    }
     const currentNav = navigation.find(item => 
       pathname === item.href || pathname?.startsWith(item.href + '/')
     )
@@ -73,8 +84,8 @@ export default function AdminLayout({ children, allowedRoles = ['admin', 'seller
           <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="flex items-center justify-center h-16 border-b border-gray-200">
-              <Link href="/admin" className="text-xl font-bold text-gray-900">
-                E-Commerce Admin
+              <Link href={dashboardHref} className="text-xl font-bold text-gray-900">
+                {isSeller ? 'Seller Dashboard' : 'E-Commerce Admin'}
               </Link>
             </div>
 

@@ -53,18 +53,28 @@ export default function SignupPage() {
         }
       )
 
-      if (authError || !user) {
+      if (authError) {
         // Provide more helpful error messages
-        let errorMessage = authError?.message || 'Failed to create account'
+        let errorMessage = authError.message || 'Failed to create account'
         
         if (errorMessage.includes('Supabase is not configured')) {
           errorMessage = 'Supabase is not configured. Please set up your .env.local file with Supabase credentials.'
         } else if (errorMessage.includes('Network error') || errorMessage.includes('fetch')) {
           errorMessage = 'Unable to connect to Supabase. Please check your internet connection and ensure Supabase credentials are correct in .env.local'
-        } else if (errorMessage.includes('User already registered')) {
+        } else if (errorMessage.includes('User already registered') || errorMessage.includes('already registered')) {
           errorMessage = 'An account with this email already exists. Please sign in instead.'
-        } else if (errorMessage.includes('Password')) {
-          errorMessage = 'Password does not meet requirements. Please use a stronger password.'
+        } else if (errorMessage.includes('Password') || errorMessage.includes('password')) {
+          errorMessage = 'Password does not meet requirements. Please use a stronger password (at least 6 characters).'
+        } else if (errorMessage.includes('email') && errorMessage.includes('invalid')) {
+          errorMessage = 'Please enter a valid email address.'
+        } else if (errorMessage.includes('rate limit') || errorMessage.includes('too many requests')) {
+          errorMessage = 'Email rate limit exceeded. This happens when too many signup attempts are made. Please wait 10-15 minutes before trying again, or disable email confirmation in Supabase Dashboard (Authentication → Settings → Email Auth → Disable "Confirm email").'
+        } else if (errorMessage.includes('check your email')) {
+          // Email confirmation required
+          setError('')
+          alert('Account created successfully! Please check your email to confirm your account before signing in.')
+          router.push('/login')
+          return
         }
         
         setError(errorMessage)
@@ -72,7 +82,20 @@ export default function SignupPage() {
         return
       }
 
-      router.push(`/${formData.role}`)
+      if (!user) {
+        setError('Account creation may require email confirmation. Please check your email.')
+        setIsLoading(false)
+        return
+      }
+
+      // Success - redirect to appropriate dashboard
+      try {
+        router.push(`/${formData.role}`)
+      } catch (redirectError) {
+        console.error('Redirect error:', redirectError)
+        // Fallback: redirect to login
+        router.push('/login')
+      }
     } catch (error) {
       setError('An unexpected error occurred')
       setIsLoading(false)

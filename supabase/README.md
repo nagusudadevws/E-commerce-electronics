@@ -69,3 +69,4 @@ If you encounter errors:
 3. Ensure all foreign key relationships are valid
 4. Check Supabase logs for detailed error messages
 
+

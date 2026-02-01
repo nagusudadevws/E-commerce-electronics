@@ -22,3 +22,4 @@ export const hasRole = (user: User | null, role: UserRole): boolean => {
   return getUserRole(user) === role
 }
 
+

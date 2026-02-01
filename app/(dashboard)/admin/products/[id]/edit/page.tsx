@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { getProductById, updateProduct, getCategories } from '@/lib/database/queries'
+import ImageUpload from '@/components/products/ImageUpload'
 import type { Product, Category } from '@/types/database'
 
 export default function EditProductPage() {
@@ -27,6 +28,7 @@ export default function EditProductPage() {
     sku: '',
     category_id: '',
     status: 'active' as 'active' | 'inactive' | 'out_of_stock',
+    image_url: '',
   })
 
   useEffect(() => {
@@ -49,6 +51,7 @@ export default function EditProductPage() {
           sku: data.sku || '',
           category_id: data.category_id || '',
           status: data.status,
+          image_url: data.image_url || '',
         })
       } else {
         setError('Product not found')
@@ -122,6 +125,7 @@ export default function EditProductPage() {
         stock: stock,
         sku: formData.sku || null,
         category_id: formData.category_id || null,
+        image_url: formData.image_url || null,
         status: formData.status,
       })
 
@@ -256,6 +260,11 @@ export default function EditProductPage() {
                 <option value="out_of_stock">Out of Stock</option>
               </select>
             </div>
+
+            <ImageUpload
+              onUploadComplete={(url) => setFormData({ ...formData, image_url: url })}
+              currentImageUrl={formData.image_url}
+            />
 
             <div className="flex gap-4 pt-4">
               <Button type="submit" isLoading={saving}>
