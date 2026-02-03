@@ -53,5 +53,8 @@ backend/.venv
 *.swp
 *.swo
 
+# documentation
+docs/
+
 
 
