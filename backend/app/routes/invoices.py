@@ -31,3 +31,5 @@ async def generate_invoice_by_id(order_id: str):
         detail="Please use POST /api/invoices/generate with order data in request body"
     )
 
+
+

@@ -105,3 +105,5 @@ class InvoiceService:
         buffer.seek(0)
         return buffer.read()
 
+
+

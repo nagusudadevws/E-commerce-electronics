@@ -29,3 +29,5 @@ $$;
 -- Grant execute permission
 GRANT EXECUTE ON FUNCTION public.is_admin_or_seller() TO authenticated, anon;
 
+
+

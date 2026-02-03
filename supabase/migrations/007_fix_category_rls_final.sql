@@ -85,3 +85,5 @@ BEGIN
   RAISE NOTICE 'is_admin_or_seller() function test result: %', test_result;
 END $$;
 
+
+

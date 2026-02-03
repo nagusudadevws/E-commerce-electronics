@@ -70,3 +70,5 @@ If you encounter errors:
 4. Check Supabase logs for detailed error messages
 
 
+
+

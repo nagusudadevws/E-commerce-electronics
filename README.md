@@ -1,131 +1,116 @@
 # Multi-Vendor Electronics & IoT E-Commerce Platform
 
-A modern, scalable e-commerce platform for Electronics & IoT devices built with Next.js, Supabase, and FastAPI.
+## Project Structure
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-- Supabase account
-
-### Installation
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Set up environment variables:**
-   ```bash
-   cp .env.local.example .env.local
-   ```
-   
-   Then edit `.env.local` with your Supabase credentials:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   ```
-
-3. **Run the development server:**
-   ```bash
-   npm run dev
-   ```
-
-4. **Open your browser:**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📁 Project Structure
+This project is organized into separate frontend and backend directories:
 
 ```
-e-commerce-website-3/
-├── app/                    # Next.js app directory
-│   ├── about/             # About page
-│   ├── contact/           # Contact page
-│   ├── privacy/           # Privacy policy page
-│   ├── terms/             # Terms of service page
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Landing page
-├── components/
-│   ├── landing/           # Landing page components
-│   ├── layout/            # Layout components (Header, Footer)
-│   └── ui/                # Reusable UI components
-├── lib/
-│   ├── supabase/          # Supabase client configuration
-│   └── utils/             # Utility functions
-├── development-phases/     # Development documentation
-└── context/               # Reference materials
+.
+├── frontend/          # Next.js frontend application
+├── backend/          # FastAPI backend application
+├── supabase/          # Database migrations and Supabase configuration
+├── docs/              # Documentation files
+└── README.md          # This file
 ```
 
-## 🎨 Features
+## Frontend
 
-### Phase 0: Landing Page & Public Interface ✅
-- Modern, responsive landing page
-- Hero section with clear value proposition
-- Features showcase
-- Product categories preview
-- Statistics/Trust indicators
-- Call-to-action sections
-- About, Contact, Terms, and Privacy pages
+The frontend is a Next.js application located in the `frontend/` directory.
 
-## 🛠️ Tech Stack
+### Getting Started
 
-- **Frontend**: Next.js 14, React, TypeScript
-- **Styling**: Tailwind CSS
-- **Database & Auth**: Supabase (PostgreSQL)
-- **State Management**: Zustand (optional)
-- **Form Handling**: React Hook Form + Zod
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-## 📚 Documentation
+The application will be available at `http://localhost:3000`
 
-- **Development Phases**: See `development-phases/` folder
-- **UI/UX Guidelines**: `development-phases/UI_UX_Guidelines.md`
-- **Setup Commands**: `context/setup-commands.md`
-- **Architecture Notes**: `context/architecture-notes.md`
+### Frontend Structure
 
-## 🔧 Available Scripts
+```
+frontend/
+├── app/              # Next.js app directory (pages and routes)
+├── components/       # React components
+├── lib/              # Utility functions and helpers
+├── types/            # TypeScript type definitions
+├── context/          # React context providers
+└── package.json      # Frontend dependencies
+```
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm run lint` - Run ESLint
+## Backend
 
-## 📝 Development Phases
+The backend is a FastAPI application located in the `backend/` directory.
 
-This project follows a phased development approach:
+### Getting Started
 
-- ✅ **Phase 0**: Landing Page & Public Interface
-- ⏳ **Phase 1**: Project Setup & Authentication (Next)
-- ⏳ **Phase 2**: Database Schema & Core Models
-- ⏳ **Phase 3**: Admin Dashboard & Product Management
-- ⏳ **Phase 4**: Order Management System
-- ⏳ **Phase 5**: Customer Management & Product Catalog
-- ⏳ **Phase 6**: Payment Gateway Integration & Media Upload
+```bash
+cd backend
+pip3 install -r requirements.txt
+uvicorn app.main:app --reload
+```
 
-## 🔐 Environment Variables
+The API will be available at `http://localhost:8000`
 
-Required environment variables:
+### Backend Structure
+
+```
+backend/
+├── app/
+│   ├── main.py       # FastAPI application entry point
+│   ├── routes/       # API route handlers
+│   ├── services/     # Business logic services
+│   ├── models/       # Data models
+│   └── utils/        # Utility functions
+└── requirements.txt  # Python dependencies
+```
+
+## Database
+
+Database migrations are located in the `supabase/` directory.
+
+## Documentation
+
+All documentation files are located in the `docs/` directory, including:
+- Setup guides
+- Development phase documentation
+- Troubleshooting guides
+- API documentation
+
+## Tech Stack
+
+- **Frontend**: Next.js 14, React 18, TypeScript, Tailwind CSS
+- **Backend**: FastAPI, Python
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Storage**: Supabase Storage
+
+## Environment Variables
+
+### Frontend
+
+Create a `.env.local` file in the `frontend/` directory:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-## 📄 License
+### Backend
 
-This project is private and proprietary.
+Create a `.env` file in the `backend/` directory:
 
-## 👤 Author
+```env
+SUPABASE_URL=your_supabase_url
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+STRIPE_SECRET_KEY=your_stripe_secret_key
+```
 
-Nagu
+## Development
 
----
+See the `docs/` directory for detailed development guides and phase documentation.
 
-**Status**: Phase 0 Complete ✅ | Ready for Phase 1
+## License
 
-# E-commerce-electronics
-
+Private project
