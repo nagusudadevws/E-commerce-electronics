@@ -56,5 +56,8 @@ backend/.venv
 # documentation
 docs/
 
+# backend
+backend/
+
 
 
