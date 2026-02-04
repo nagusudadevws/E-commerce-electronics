@@ -10,16 +10,21 @@
 
 1. Go to your Supabase project dashboard
 2. Navigate to **SQL Editor**
-3. Open the migration file: `supabase/migrations/001_initial_schema.sql`
+3. Open the migration file: `frontend/supabase/migrations/001_initial_schema.sql`
 4. Copy the entire SQL content
 5. Paste it into the SQL Editor
 6. Click **Run** to execute
 
 ### Option 2: Using Supabase CLI
 
+**Important**: Run all Supabase CLI commands from the `frontend/` directory.
+
 ```bash
 # Install Supabase CLI (if not already installed)
 npm install -g supabase
+
+# Navigate to frontend directory
+cd frontend
 
 # Link to your project
 supabase link --project-ref your-project-ref
@@ -68,6 +73,7 @@ If you encounter errors:
 2. Verify RLS policies are correctly applied
 3. Ensure all foreign key relationships are valid
 4. Check Supabase logs for detailed error messages
+
 
 
 

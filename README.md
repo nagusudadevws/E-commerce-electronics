@@ -7,8 +7,8 @@ This project is organized into separate frontend and backend directories:
 ```
 .
 ├── frontend/          # Next.js frontend application
+│   └── supabase/      # Database migrations and Supabase configuration
 ├── backend/          # FastAPI backend application
-├── supabase/          # Database migrations and Supabase configuration
 ├── docs/              # Documentation files
 └── README.md          # This file
 ```
@@ -36,6 +36,7 @@ frontend/
 ├── lib/              # Utility functions and helpers
 ├── types/            # TypeScript type definitions
 ├── context/          # React context providers
+├── supabase/         # Database migrations and Supabase configuration
 └── package.json      # Frontend dependencies
 ```
 
@@ -68,7 +69,7 @@ backend/
 
 ## Database
 
-Database migrations are located in the `supabase/` directory.
+Database migrations are located in the `frontend/supabase/` directory.
 
 ## Documentation
 
